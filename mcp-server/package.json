@@ -1,11 +1,11 @@
 {
-  "name": "super-pm-ai-server",
+  "name": "super-pm-ai",
   "version": "0.1.0",
   "description": "A Model Context Protocol server",
   "private": true,
   "type": "module",
   "bin": {
-    "super-pm-ai-server": "./build/index.js"
+    "super-pm-ai": "./build/index.js"
   },
   "files": [
     "build"
@@ -13,11 +13,16 @@
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
     "prepare": "npm run build",
+    "start": "node build/index.js",
     "watch": "tsc --watch",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "0.6.0"
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "@types/jira-client": "^7.1.9",
+    "dotenv": "^16.5.0",
+    "jira-client": "^8.2.2",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
