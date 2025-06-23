@@ -7,80 +7,89 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-  ListPromptsRequestSchema,
-  GetPromptRequestSchema,
-  CallToolRequest,
-  GetPromptRequest
+	CallToolRequestSchema,
+	ListToolsRequestSchema,
+	ListPromptsRequestSchema,
+	GetPromptRequestSchema,
+	type CallToolRequest,
+	type GetPromptRequest,
 } from "@modelcontextprotocol/sdk/types.js";
-import { getFileSystemTools, handleFileSystemTool } from "./agents/file-system/file-system.js";
-import { getJiraTools, handleJiraTool, getJiraPrompts, handleJiraPrompt } from "./agents/jira/jira.js";
+import {
+	getFileSystemTools,
+	handleFileSystemTool,
+} from "./agents/file-system/file-system.js";
+import {
+	getJiraTools,
+	handleJiraTool,
+	getJiraPrompts,
+	handleJiraPrompt,
+} from "./agents/jira/jira.js";
 import "dotenv/config";
 
 const server = new Server(
-  {
-    name: "super-pm-ai",
-    version: "0.1.0",
-  },
-  {
-    capabilities: {
-      tools: {},
-      prompts: {},
-    },
-  }
+	{
+		name: "super-pm-ai",
+		version: "0.1.0",
+	},
+	{
+		capabilities: {
+			tools: {},
+			prompts: {},
+		},
+	},
 );
 
-const allTools = [
-    ...getFileSystemTools(),
-    ...getJiraTools(),
-];
+const allTools = [...getFileSystemTools(), ...getJiraTools()];
 
-const allPrompts = [
-    ...getJiraPrompts(),
-];
+const allPrompts = [...getJiraPrompts()];
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-    return { tools: allTools };
+	return { tools: allTools };
 });
 
-server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
-    let result = await handleFileSystemTool(request);
-    if (result) {
-        return result;
-    }
+server.setRequestHandler(
+	CallToolRequestSchema,
+	async (request: CallToolRequest) => {
+		let result = await handleFileSystemTool(request);
+		if (result) {
+			return result;
+		}
 
-    result = await handleJiraTool(request);
-    if (result) {
-        return result;
-    }
+		result = await handleJiraTool(request);
+		if (result) {
+			return result;
+		}
 
-    throw new Error(`Unknown tool: ${request.params.name}`);
-});
+		throw new Error(`Unknown tool: ${request.params.name}`);
+	},
+);
 
 server.setRequestHandler(ListPromptsRequestSchema, async () => {
-    return { prompts: allPrompts };
+	return { prompts: allPrompts };
 });
 
-server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptRequest) => {
-    const result = handleJiraPrompt(request);
-    if (result) {
-        return result;
-    }
+server.setRequestHandler(
+	GetPromptRequestSchema,
+	async (request: GetPromptRequest) => {
+		const result = handleJiraPrompt(request);
+		if (result) {
+			return result;
+		}
 
-    throw new Error(`Unknown prompt: ${request.params.name}`);
-});
+		throw new Error(`Unknown prompt: ${request.params.name}`);
+	},
+);
 
 /**
  * Start the server using stdio transport.
  * This allows the server to communicate via standard input/output streams.
  */
 async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+	const transport = new StdioServerTransport();
+	await server.connect(transport);
 }
 
 main().catch((error) => {
-  console.error("Server error:", error);
-  process.exit(1);
+	console.error("Server error:", error);
+	process.exit(1);
 });
