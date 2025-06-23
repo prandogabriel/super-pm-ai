@@ -17,13 +17,13 @@ import {
 import {
 	getFileSystemTools,
 	handleFileSystemTool,
-} from "./agents/file-system/file-system.js";
+} from "./services/file-system/file-system.js";
 import {
 	getJiraTools,
 	handleJiraTool,
 	getJiraPrompts,
 	handleJiraPrompt,
-} from "./agents/jira/jira.js";
+} from "./services/jira/jira.js";
 import "dotenv/config";
 
 const server = new Server(
