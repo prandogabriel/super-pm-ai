@@ -5,7 +5,6 @@
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
 	CallToolRequestSchema,
 	ListToolsRequestSchema,
@@ -24,6 +23,8 @@ import {
 	getJiraPrompts,
 	handleJiraPrompt,
 } from "./services/jira/jira.js";
+import { createStreamableHttpServer } from "./transport/streamableHttp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import "dotenv/config";
 
 const server = new Server(
@@ -81,10 +82,12 @@ server.setRequestHandler(
 );
 
 /**
- * Start the server using stdio transport.
- * This allows the server to communicate via standard input/output streams.
+ * Start the server using Streamable HTTP transport.
+ * This allows the server to communicate over HTTP and be accessible from anywhere.
  */
 async function main() {
+	// const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+	// createStreamableHttpServer(server, port);
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
 }
