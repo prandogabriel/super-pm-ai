@@ -15,6 +15,7 @@
     "prepare": "npm run build",
     "start": "node build/index.js",
     "watch": "tsc --watch",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'node --loader ts-node/esm' src/index.ts",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js"
   },
   "dependencies": {
@@ -26,6 +27,8 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2"
   }
 }
